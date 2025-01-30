@@ -59,6 +59,18 @@ export function generateEdges( geometry, projectionDir = UP_VECTOR, thresholdAng
 
 		}
 
+		// get the dot product relative to the projection angle and
+		// add an epsilon for nearly vertical triangles
+		let normDot = projectionDir.dot(_normal)
+		normDot = Math.abs(normDot) < EPSILON ? 0 : normDot;
+
+		// skip triangles facing away from the projection
+		if ( normDot < 0 ) {
+
+			continue;
+
+		}
+
 		// iterate over every edge
 		for ( let j = 0; j < 3; j ++ ) {
 
@@ -79,10 +91,10 @@ export function generateEdges( geometry, projectionDir = UP_VECTOR, thresholdAng
 				const otherNormal = edgeData[ reverseHash ].normal;
 				const meetsThreshold = _normal.dot( otherNormal ) <= thresholdDot;
 
-				// get the dot product relative to the projection angle and
-				// add an epsilon for nearly vertical triangles
-				let normDot = projectionDir.dot( _normal );
-				normDot = Math.abs( normDot ) < EPSILON ? 0 : normDot;
+				// // get the dot product relative to the projection angle and
+				// // add an epsilon for nearly vertical triangles
+				// let normDot = projectionDir.dot( _normal );
+				// normDot = Math.abs( normDot ) < EPSILON ? 0 : normDot;
 
 				let otherDot = projectionDir.dot( otherNormal );
 				otherDot = Math.abs( otherDot ) < EPSILON ? 0 : otherDot;
